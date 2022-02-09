@@ -17,7 +17,7 @@ tab1:AddSwitch("Aimbot",function(value)
     tog = value
     while tog do wait()
     loadstring(game:HttpGet("https://pastebin.com/raw/WZkKfcfD"))()
-    end
+  end
 end)
 
 
@@ -27,4 +27,5 @@ task.spawn(function()
 while tog2 do wait()
         loadstring(game:HttpGet("https://pastebin.com/raw/W2FGFgMj"))()
         end
+  end)
 end)
