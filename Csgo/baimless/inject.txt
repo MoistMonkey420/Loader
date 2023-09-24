@@ -1,3 +1,0 @@
-start patcher.exe
-timeout 5 /nobreak
-start baimless
