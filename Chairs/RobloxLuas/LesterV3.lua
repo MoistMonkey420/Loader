@@ -97,7 +97,7 @@ local function updateBox(BoxOutline, Box, NameLabel, character)
             Box.Visible = bToggleBox
 
             -- Update Name Label
-            NameLabel.Position = Vector2.new(RootPosition.X, RootPosition.Y - boxHeight)
+            NameLabel.Position = Vector2.new(RootPosition.X, RootPosition.Y + boxHeight)
             NameLabel.Text = character.Name
             NameLabel.Visible = bToggleName
         else
