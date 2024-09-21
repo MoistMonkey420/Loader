@@ -1,29 +1,33 @@
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-local Window = Library.CreateLib("Lester V3", "Synapse")
-
-local tAimbot = Window:NewTab("Aimbot")
-local tEsp = Window:NewTab("ESP")
-
-local sAimbot = tAimbot:NewSection("Aimbot")
-local sEsp = tEsp:NewSection("ESP")
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+local Window = OrionLib:MakeWindow({Name = "Lester V3", HidePremium = false, SaveConfig = true, ConfigFolder = "Lester", IntroEnabled = true, IntroText = "Lester V3"})
 
 local bToggleAimbot = false
 local bToggleBox = false
 
-sAimbot:NewToggle("Aimbot", "dis fucks", function(state)
-    if state then
-        bToggleAimbot = true
-    else
-        bToggleAimbot = false
-    end
-end)
-sEsp:NewToggle("Box", "dis fucks", function(state)
-    if state then
-        bToggleBox = true
-    else
-        bToggleBox = false
-    end
-end)
+local TabAimbot = Window:MakeTab({
+	Name = "Aimbot",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+TabAimbot:AddToggle({
+	Name = "Aimbot",
+	Default = false,
+	Callback = function(Value)
+		bToggleAimbot = Value
+	end    
+})
+local TabEsp = Window:MakeTab({
+	Name = "Esp",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+TabEsp:AddToggle({
+	Name = "Box",
+	Default = false,
+	Callback = function(Value)
+		bToggleBox = Value
+	end    
+})
 
 local lplr = game.Players.LocalPlayer
 local camera = game:GetService("Workspace").CurrentCamera
