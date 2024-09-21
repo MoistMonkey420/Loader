@@ -5,6 +5,7 @@ local bToggleAimbot = false
 local bToggleName = false
 local bToggleBox = false
 
+--Aimbot
 local TabAimbot = Window:MakeTab({
     Name = "Aimbot",
     Icon = "rbxassetid://4483345998",
@@ -17,7 +18,7 @@ TabAimbot:AddToggle({
         bToggleAimbot = Value
     end    
 })
-
+--ESP
 local TabEsp = Window:MakeTab({
     Name = "Esp",
     Icon = "rbxassetid://4483345998",
@@ -36,6 +37,36 @@ TabEsp:AddToggle({
     Callback = function(Value)
         bToggleBox = Value
     end    
+})
+--Scripthub
+local TabScriptHub = Window:MakeTab({
+    Name = "ScriptHub",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+TabScriptHub:AddButton({
+	Name = "Infinite Yield",
+	Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/refs/heads/master/source"))()
+  	end    
+})
+TabScriptHub:AddButton({
+	Name = "Dex Explorer",
+	Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Babyhamsta/RBLX_Scripts/main/Universal/BypassedDarkDexV3.lua"))()
+  	end    
+})
+TabScriptHub:AddButton({
+	Name = "Simple Spy",
+	Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/exxtremestuffs/SimpleSpySource/refs/heads/master/SimpleSpy.lua"))()
+  	end    
+})
+TabScriptHub:AddButton({
+	Name = "Turtle Spy",
+	Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Turtle-Brand/Turtle-Spy/refs/heads/main/source.lua"))()
+  	end    
 })
 
 local lplr = game.Players.LocalPlayer
