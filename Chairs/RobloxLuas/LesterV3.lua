@@ -51,12 +51,6 @@ TabScriptHub:AddButton({
   	end    
 })
 TabScriptHub:AddButton({
-	Name = "Dex Explorer",
-	Callback = function()
-        loadstring(game:HttpGet("https://github.com/Hosvile/DEX-Explorer/releases/latest/download/main.lua"))()
-  	end    
-})
-TabScriptHub:AddButton({
 	Name = "Simple Spy",
 	Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/exxtremestuffs/SimpleSpySource/refs/heads/master/SimpleSpy.lua"))()
