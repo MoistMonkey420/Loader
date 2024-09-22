@@ -53,7 +53,7 @@ TabScriptHub:AddButton({
 TabScriptHub:AddButton({
 	Name = "Dex Explorer",
 	Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Babyhamsta/RBLX_Scripts/main/Universal/BypassedDarkDexV3.lua"))()
+        loadstring(game:HttpGet("https://github.com/Hosvile/DEX-Explorer/releases/latest/download/main.lua"))()
   	end    
 })
 TabScriptHub:AddButton({
