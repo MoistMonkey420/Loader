@@ -99,7 +99,7 @@ TabEsp:AddColorpicker({
 	end	  
 })
 TabEsp:AddToggle({
-    Name = "Health bar",
+    Name = "HealthBar",
     Default = false,
     Callback = function(Value)
         menuSettings.bHealthbar = Value
@@ -112,8 +112,16 @@ TabEsp:AddToggle({
         menuSettings.bTracers = Value
     end    
 })
+TabEsp:AddDropdown({
+	Name = "Tracer AnchorPoint",
+	Default = "Bottom",
+	Options = {"Bottom", "Middle"},
+	Callback = function(Value)
+		Settings.Tracer_Origin = Value
+	end    
+})
 TabEsp:AddColorpicker({
-	Name = "Box Color",
+	Name = "Tracer Color",
 	Default = Color3.fromRGB(255, 0, 0),
 	Callback = function(Value)
         Settings.Tracer_Color = Value
@@ -129,28 +137,11 @@ local function getClosest(cframe)
 
     if game.PlaceId == 286090429 then
         teamCheck = true
-    end
-    if game.PlaceId == 2377868063 then
+        print("Arsenal")
+    elseif game.PlaceId == 2377868063 then
         disableAimbot = true
-        _G.HeadSize = 20
-         
-        _G.Disabled = true
-
-        game:GetService('RunService').RenderStepped:connect(function()
-            if _G.Disabled then
-                for i,v in next, game:GetService('Players'):GetPlayers() do
-                    if v.Name ~= game:GetService('Players').LocalPlayer.Name then
-                        pcall(function()
-                            v.Character.HumanoidRootPart.Size = Vector3.new(_G.HeadSize,_G.HeadSize,_G.HeadSize)
-                            v.Character.HumanoidRootPart.Transparency = 0.7
-                            v.Character.HumanoidRootPart.BrickColor = BrickColor.new("Really black")
-                            v.Character.HumanoidRootPart.Material = "Neon"
-                            v.Character.HumanoidRootPart.CanCollide = false
-                        end)
-                    end
-                end
-            end
-        end)
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/MoistMonkey420/Loader/refs/heads/main/Chairs/RobloxLuas/Strucid_Hitbox.lua"))()
+        print("Strucid")
     else
         disableAimbot = false
     end
