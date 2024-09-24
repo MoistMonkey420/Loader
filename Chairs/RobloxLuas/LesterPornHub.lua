@@ -23,12 +23,12 @@ FOVring.Thickness = 1.5
 FOVring.Radius = fov
 FOVring.Transparency = 1
 FOVring.Color = Color3.fromRGB(255, 255, 255)
-FOVring.Position = workspace.CurrentCamera.ViewportSize/2
+--FOVring.Position = workspace.CurrentCamera.ViewportSize/2
 
 --esp
 local Settings = {
-    Box_Color = Color3.fromRGB(255, 255, 255),
-    Tracer_Color = Color3.fromRGB(255, 255, 255),
+    Box_Color = Color3.fromRGB(255, 0, 0),
+    Tracer_Color = Color3.fromRGB(255, 0, 0),
     Tracer_Thickness = 1,
     Box_Thickness = 1,
     Tracer_Origin = "Bottom", -- Middle or Bottom if FollowMouse is on this won't matter...
@@ -59,7 +59,18 @@ TabAimbot:AddToggle({
         menuSettings.bAimbot = Value
     end    
 })
-
+TabAimbot:AddSlider({
+    Name = "Aimbot fov",
+    Min = 69,
+    Max = 300,
+    Default = 150,
+    Color = Color3.fromRGB(255,255,255),
+    Increment = 1,
+    ValueName = "",
+    Callback = function(Value)
+        fov = Value
+    end
+})
 --ESP
 local TabEsp = Window:MakeTab({
     Name = "Esp",
@@ -127,10 +138,15 @@ end
         
 loop = RunService.RenderStepped:Connect(function()
     local UserInputService = game:GetService("UserInputService")
-    local pressed = UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton2)
+    local pressed = --[[UserInputService:IsKeyDown(Enum.KeyCode.E)]] UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton2) --Enum.UserInputType.MouseButton2
     local localPlay = game.Players.localPlayer.Character
     local cam = workspace.CurrentCamera
     local zz = workspace.CurrentCamera.ViewportSize/2
+
+    -- Update FOV circle
+    FOVring.Position = zz
+    FOVring.Radius = fov -- Use the updated fov value from the slider
+    FOVring.Visible = menuSettings.bAimbot -- Show or hide FOV ring based on aimbot toggle
            
     if pressed and menuSettings.bAimbot and not disableAimbot then
         local Line = Drawing.new("Line")
@@ -174,34 +190,31 @@ local function NewLine(thickness, color)
     return line
 end
 
-local function NewText(size, color)
-    local text = Drawing.new("Text")
-    text.Visible = false
-    text.Size = size
-    text.Color = color
-    text.Center = true
-    text.Outline = true
-    text.OutlineColor = Color3.fromRGB(0, 0, 0)
-    text.Transparency = 1
-    return text
-end
-
 local function Visibility(state, lib)
     for u, x in pairs(lib) do
         x.Visible = state
     end
 end
 
+local function ToColor3(col) --Function to convert, just cuz c;
+    local r = col.r --Red value
+    local g = col.g --Green value
+    local b = col.b --Blue value
+    return Color3.new(r,g,b); --Color3 datatype, made of the RGB inputs
+end
+
 local black = Color3.fromRGB(0, 0 ,0)
 local function ESP(plr)
     local library = {
+        --//Tracer and Black Tracer(black border)
         blacktracer = NewLine(Settings.Tracer_Thickness*2, black),
         tracer = NewLine(Settings.Tracer_Thickness, Settings.Tracer_Color),
+        --//Box and Black Box(black border)
         black = NewQuad(Settings.Box_Thickness*2, black),
         box = NewQuad(Settings.Box_Thickness, Settings.Box_Color),
+        --//Bar and Green Health Bar (part that moves up/down)
         healthbar = NewLine(3, black),
-        greenhealth = NewLine(1.5, black),
-        nameTag = NewText(14, Color3.fromRGB(255, 255, 255))
+        greenhealth = NewLine(1.5, black)
     }
 
     local function Colorize(color)
@@ -215,23 +228,19 @@ local function ESP(plr)
     local function Updater()
         local connection
         connection = game:GetService("RunService").RenderStepped:Connect(function()
-            if plr.Character and plr.Character:FindFirstChild("Humanoid") and plr.Character:FindFirstChild("HumanoidRootPart") and plr.Character.Humanoid.Health > 0 and plr.Character:FindFirstChild("Head") then
+            if plr.Character ~= nil and plr.Character:FindFirstChild("Humanoid") ~= nil and plr.Character:FindFirstChild("HumanoidRootPart") ~= nil and plr.Character.Humanoid.Health > 0 and plr.Character:FindFirstChild("Head") ~= nil then
                 local HumPos, OnScreen = camera:WorldToViewportPoint(plr.Character.HumanoidRootPart.Position)
                 if OnScreen then
                     local head = camera:WorldToViewportPoint(plr.Character.Head.Position)
-                    local DistanceY = math.clamp((Vector2.new(head.X, head.Y) - Vector2.new(HumPos.X, HumPos.Y)).Magnitude, 2, math.huge)
-
+                    local DistanceY = math.clamp((Vector2.new(head.X, head.Y) - Vector2.new(HumPos.X, HumPos.Y)).magnitude, 2, math.huge)
                     -- Name
                     if menuSettings.bName then
-                        library.nameTag.Text = plr.Name
-                        library.nameTag.Position = Vector2.new(head.X, head.Y + 20)
-                        library.nameTag.Visible = true
+
                     else
-                        library.nameTag.Visible = false
-                        library.nameTag.Size = 0
+                        
                     end
 
-                    -- Box
+                    --Box
                     local function Size(item)
                         if menuSettings.bBox then
                             item.PointA = Vector2.new(HumPos.X + DistanceY, HumPos.Y - DistanceY*2)
@@ -248,18 +257,18 @@ local function ESP(plr)
                     Size(library.box)
                     Size(library.black)
 
-                    -- Tracer 
+                    --Tracer 
                     if menuSettings.bTracers then
                         if Settings.Tracer_Origin == "Middle" then
-                            library.tracer.From = camera.ViewportSize * 0.5
-                            library.blacktracer.From = camera.ViewportSize * 0.5
+                            library.tracer.From = camera.ViewportSize*0.5
+                            library.blacktracer.From = camera.ViewportSize*0.5
                         elseif Settings.Tracer_Origin == "Bottom" then
-                            library.tracer.From = Vector2.new(camera.ViewportSize.X * 0.5, camera.ViewportSize.Y)
-                            library.blacktracer.From = Vector2.new(camera.ViewportSize.X * 0.5, camera.ViewportSize.Y)
+                            library.tracer.From = Vector2.new(camera.ViewportSize.X*0.5, camera.ViewportSize.Y) 
+                            library.blacktracer.From = Vector2.new(camera.ViewportSize.X*0.5, camera.ViewportSize.Y)
                         end
                         if Settings.Tracer_FollowMouse then
-                            library.tracer.From = Vector2.new(mouse.X, mouse.Y + 36)
-                            library.blacktracer.From = Vector2.new(mouse.X, mouse.Y + 36)
+                            library.tracer.From = Vector2.new(mouse.X, mouse.Y+36)
+                            library.blacktracer.From = Vector2.new(mouse.X, mouse.Y+36)
                         end
                         library.tracer.To = Vector2.new(HumPos.X, HumPos.Y + DistanceY*2)
                         library.blacktracer.To = Vector2.new(HumPos.X, HumPos.Y + DistanceY*2)
@@ -267,23 +276,23 @@ local function ESP(plr)
                         library.tracer.From = Vector2.new(0, 0)
                         library.blacktracer.From = Vector2.new(0, 0)
                         library.tracer.To = Vector2.new(0, 0)
-                        library.blacktracer.To = Vector2.new(0, 0)
+                        library.blacktracer.To = Vector2.new(0, 02)
                     end
 
-                    -- Healthbar
-                    local d = (Vector2.new(HumPos.X - DistanceY, HumPos.Y - DistanceY*2) - Vector2.new(HumPos.X - DistanceY, HumPos.Y + DistanceY*2)).Magnitude 
-                    local healthoffset = plr.Character.Humanoid.Health / plr.Character.Humanoid.MaxHealth * d
+                    --Healthbar
+                    local d = (Vector2.new(HumPos.X - DistanceY, HumPos.Y - DistanceY*2) - Vector2.new(HumPos.X - DistanceY, HumPos.Y + DistanceY*2)).magnitude 
+                    local healthoffset = plr.Character.Humanoid.Health/plr.Character.Humanoid.MaxHealth * d
 
                     local green = Color3.fromRGB(0, 255, 0)
                     local red = Color3.fromRGB(255, 0, 0)
-                    if menuSettings.bHealthbar then
+                    if menuSettings.bHealthbar == true then
                         library.greenhealth.From = Vector2.new(HumPos.X - DistanceY - 4, HumPos.Y + DistanceY*2)
                         library.greenhealth.To = Vector2.new(HumPos.X - DistanceY - 4, HumPos.Y + DistanceY*2 - healthoffset)
 
                         library.healthbar.From = Vector2.new(HumPos.X - DistanceY - 4, HumPos.Y + DistanceY*2)
                         library.healthbar.To = Vector2.new(HumPos.X - DistanceY - 4, HumPos.Y - DistanceY*2)
 
-                        library.greenhealth.Color = red:lerp(green, plr.Character.Humanoid.Health / plr.Character.Humanoid.MaxHealth)
+                        library.greenhealth.Color = red:lerp(green, plr.Character.Humanoid.Health/plr.Character.Humanoid.MaxHealth);
                     else
                         library.greenhealth.From = Vector2.new(0, 0)
                         library.greenhealth.To = Vector2.new(0, 0)
@@ -291,14 +300,27 @@ local function ESP(plr)
                         library.healthbar.From = Vector2.new(0, 0)
                         library.healthbar.To = Vector2.new(0, 0)
 
-                        library.greenhealth.Color = red:lerp(green, plr.Character.Humanoid.Health / plr.Character.Humanoid.MaxHealth)
+                        library.greenhealth.Color = red:lerp(green, plr.Character.Humanoid.Health/plr.Character.Humanoid.MaxHealth);
                     end
 
+                    if Team_Check.TeamCheck then
+                        if plr.TeamColor == player.TeamColor then
+                            Colorize(Team_Check.Green)
+                        else 
+                            Colorize(Team_Check.Red)
+                        end
+                    else 
+                        library.tracer.Color = Settings.Tracer_Color
+                        library.box.Color = Settings.Box_Color
+                    end
+                    if TeamColor == true then
+                        Colorize(plr.TeamColor.Color)
+                    end
                     Visibility(true, library)
                 else
                     Visibility(false, library)
                 end
-            else
+            else 
                 Visibility(false, library)
                 if game.Players:FindFirstChild(plr.Name) == nil then
                     connection:Disconnect()
@@ -309,13 +331,14 @@ local function ESP(plr)
     coroutine.wrap(Updater)()
 end
 
-for _, v in pairs(game:GetService("Players"):GetPlayers()) do
+for i, v in pairs(game:GetService("Players"):GetPlayers()) do
     if v.Name ~= player.Name then
-        ESP(v)
+        coroutine.wrap(ESP)(v)
     end
 end
-game:GetService("Players").PlayerAdded:Connect(function(v)
-    ESP(v)
-end)
 
-OrionLib:Init()
+game.Players.PlayerAdded:Connect(function(newplr)
+    if newplr.Name ~= player.Name then
+        coroutine.wrap(ESP)(newplr)
+    end
+end)
