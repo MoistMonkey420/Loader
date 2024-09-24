@@ -91,6 +91,13 @@ TabEsp:AddToggle({
         menuSettings.bBox = Value
     end    
 })
+TabEsp:AddColorpicker({
+	Name = "Box Color",
+	Default = Color3.fromRGB(255, 0, 0),
+	Callback = function(Value)
+        Settings.Box_Color = Value
+	end	  
+})
 TabEsp:AddToggle({
     Name = "Health bar",
     Default = false,
@@ -105,6 +112,13 @@ TabEsp:AddToggle({
         menuSettings.bTracers = Value
     end    
 })
+TabEsp:AddColorpicker({
+	Name = "Box Color",
+	Default = Color3.fromRGB(255, 0, 0),
+	Callback = function(Value)
+        Settings.Tracer_Color = Value
+	end	  
+})
 
 -- AimBot
 local function getClosest(cframe)
@@ -118,6 +132,7 @@ local function getClosest(cframe)
     end
     if game.PlaceId == 2377868063 then
         disableAimbot = true
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/MoistMonkey420/Loader/refs/heads/main/Chairs/RobloxLuas/Strucid_Hitbox.lua"))()
     else
         disableAimbot = false
     end
