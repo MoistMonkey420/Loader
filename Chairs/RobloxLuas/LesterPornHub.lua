@@ -127,6 +127,30 @@ TabEsp:AddColorpicker({
         Settings.Tracer_Color = Value
 	end	  
 })
+--Misc
+local TabMisc = Window:MakeTab({
+    Name = "Misc",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+TabMisc:AddButton({
+	Name = "我要對你做這個☢️",
+	Callback = function()
+        game:GetService("TextChatService").TextChannels.RBXGeneral:SendAsync("我要對你做這個☢️")
+  	end    
+})
+TabMisc:AddButton({
+	Name = "我可以這樣做嗎🚭🔞❓",
+	Callback = function()
+        game:GetService("TextChatService").TextChannels.RBXGeneral:SendAsync("我可以這樣做嗎🚭🔞❓")
+  	end    
+})
+TabMisc:AddButton({
+	Name = "我們說什麼三遍❓🤔🤫",
+	Callback = function()
+        game:GetService("TextChatService").TextChannels.RBXGeneral:SendAsync("我們說什麼三遍❓🤔🤫")
+  	end    
+})
 
 -- AimBot
 local function getClosest(cframe)
