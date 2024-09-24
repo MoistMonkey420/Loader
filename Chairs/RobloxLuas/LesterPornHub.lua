@@ -27,8 +27,8 @@ FOVring.Position = workspace.CurrentCamera.ViewportSize/2
 
 --esp
 local Settings = {
-    Box_Color = Color3.fromRGB(255, 0, 0),
-    Tracer_Color = Color3.fromRGB(255, 0, 0),
+    Box_Color = Color3.fromRGB(255, 255, 255),
+    Tracer_Color = Color3.fromRGB(255, 255, 255),
     Tracer_Thickness = 1,
     Box_Thickness = 1,
     Tracer_Origin = "Bottom", -- Middle or Bottom if FollowMouse is on this won't matter...
@@ -224,10 +224,11 @@ local function ESP(plr)
                     -- Name
                     if menuSettings.bName then
                         library.nameTag.Text = plr.Name
-                        library.nameTag.Position = Vector2.new(head.X, head.Y - 20)
+                        library.nameTag.Position = Vector2.new(head.X, head.Y + 20)
                         library.nameTag.Visible = true
                     else
                         library.nameTag.Visible = false
+                        library.nameTag.Size = 0
                     end
 
                     -- Box
