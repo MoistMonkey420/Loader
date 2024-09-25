@@ -183,7 +183,7 @@ runservice.RenderStepped:Connect(function()
     if settings.aiming and settings.enabled then
         for i,v in next, character:GetChildren() do
             if v ~= localplayer and v.PrimaryPart then
-                local charHRPpos, isVisible = camera:WorldToViewportPoint(v.PrimaryPart.Position)
+                local charHRPpos, isVisible = camera:WorldToViewportPoint(v.Body.Head.Position)
                 local magDist = (Vector2.new(mouse.X, mouse.Y) - Vector2.new(charHRPpos.X, charHRPpos.Y)).Magnitude
                 if isVisible and magDist < distacne and magDist <= settings.fov_Radius then
                     distacne = magDist
@@ -192,7 +192,7 @@ runservice.RenderStepped:Connect(function()
             end
         end
         if closest_Char ~= nil then
-            camera.CFrame = CFrame.new(camera.CFrame.Position, closest_Char.PrimaryPart.Position)
+            camera.CFrame = CFrame.new(camera.CFrame.Position, closest_Char.Body.Head.Position)
         end
     end
 end)
