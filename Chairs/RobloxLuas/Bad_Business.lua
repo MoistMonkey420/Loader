@@ -36,6 +36,18 @@ TabAimbot:AddToggle({
         settings.enabled = Value
     end    
 })
+TabAimbot:AddSlider({
+	Name = "Aimbot Fov",
+	Min = 150,
+	Max = 500,
+	Default = 69,
+	Color = Color3.fromRGB(255,255,255),
+	Increment = 1,
+	ValueName = "",
+	Callback = function(Value)
+		settings.fov_Radius = Value
+	end    
+})
 --ESP
 local TabEsp = Window:MakeTab({
     Name = "Esp",
@@ -107,7 +119,7 @@ runservice.RenderStepped:Connect(function()
         local outline_Box = player.Outline_Box
         local box = player.Box
 
-        --if aplayer.Character then
+        --if aplayer.character then
             local orien,size = aplayer:GetBoundingBox()
             local height = (camera.CFrame - camera.CFrame.Position) * Vector3.new(0, math.clamp(size.Y, 1, 10) / 2, 0)
             Height = -math.abs(camera:WorldToViewportPoint(orien.Position + height).Y - camera:WorldToViewportPoint(orien.Position - height).Y)
@@ -178,6 +190,7 @@ runservice.RenderStepped:Connect(function()
     local closest_Char = nil
 
     fov_Circle.Visible = settings.enabled
+    fov_Circle.Radius = settings.fov_Radius
     fov_Circle.Position = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
 
     if settings.aiming and settings.enabled then
