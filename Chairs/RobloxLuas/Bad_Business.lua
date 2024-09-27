@@ -9,7 +9,7 @@ local runservice = game:GetService("RunService")
 local uis = game:GetService("UserInputService")
 local mouse = localplayer:GetMouse()
 
-local settings = {
+local aim_settings = {
     enabled = true,
     aiming = false,
     aimbot_AimPart = "Head",
@@ -20,8 +20,11 @@ local esp_settings = {
     enabled = true,
     box = true
 }
-
 local esp = {}
+
+local misc_settings = {
+    fov = 90
+}
 
 --Aimbot
 local TabAimbot = Window:MakeTab({
@@ -33,7 +36,7 @@ TabAimbot:AddToggle({
     Name = "Aimbot",
     Default = false,
     Callback = function(Value)
-        settings.enabled = Value
+        aim_settings.enabled = Value
     end    
 })
 TabAimbot:AddSlider({
@@ -45,21 +48,33 @@ TabAimbot:AddSlider({
 	Increment = 1,
 	ValueName = "",
 	Callback = function(Value)
-		settings.fov_Radius = Value
+		aim_settings.fov_Radius = Value
 	end    
 })
 --ESP
-local TabEsp = Window:MakeTab({
-    Name = "Esp",
+local TabVisuals = Window:MakeTab({
+    Name = "Visuals",
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
-TabEsp:AddToggle({
+TabVisuals:AddToggle({
     Name = "Box",
     Default = false,
     Callback = function(Value)
         esp_settings.box = Value
     end    
+})
+TabVisuals:AddSlider({
+	Name = "Fov",
+	Min = 50,
+	Max = 120,
+	Default = 90,
+	Color = Color3.fromRGB(255,255,255),
+	Increment = 1,
+	ValueName = "",
+	Callback = function(Value)
+		misc_settings.fov = Value
+	end    
 })
 
 -- Create ESP
@@ -167,18 +182,18 @@ end)
 --Aimbot
 uis.InputBegan:Connect(function(i)
     if i.UserInputType == Enum.UserInputType.MouseButton2 then
-        settings.aiming = true
+        aim_settings.aiming = true
     end
 end)
 uis.InputEnded:Connect(function(i)
     if i.UserInputType == Enum.UserInputType.MouseButton2 then
-        settings.aiming = false
+        aim_settings.aiming = false
     end
 end)
 
 local fov_Circle = Drawing.new("Circle")
 fov_Circle.Visible = true
-fov_Circle.Radius = settings.fov_Radius
+fov_Circle.Radius = aim_settings.fov_Radius
 fov_Circle.Color = Color3.new(1,1,1)
 fov_Circle.Thickness = 1
 fov_Circle.Filled = false
@@ -189,16 +204,17 @@ runservice.RenderStepped:Connect(function()
     local distacne = math.huge
     local closest_Char = nil
 
-    fov_Circle.Visible = settings.enabled
-    fov_Circle.Radius = settings.fov_Radius
+    fov_Circle.Visible = aim_settings.enabled
+    fov_Circle.Radius = aim_settings.fov_Radius
     fov_Circle.Position = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
+    camera.FieldOfView = misc_settings.fov
 
-    if settings.aiming and settings.enabled then
+    if aim_settings.aiming and aim_settings.enabled then
         for i,v in next, character:GetChildren() do
             if v ~= localplayer and v.PrimaryPart then
                 local charHRPpos, isVisible = camera:WorldToViewportPoint(v.Body.Head.Position)
                 local magDist = (Vector2.new(mouse.X, mouse.Y) - Vector2.new(charHRPpos.X, charHRPpos.Y)).Magnitude
-                if isVisible and magDist < distacne and magDist <= settings.fov_Radius then
+                if isVisible and magDist < distacne and magDist <= aim_settings.fov_Radius then
                     distacne = magDist
                     closest_Char = v
                 end
