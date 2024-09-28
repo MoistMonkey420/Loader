@@ -14,7 +14,8 @@ local aim_settings = {
     aiming = false,
     aimbot_AimPart = "Head",
     fov_Radius = 150,
-    aim_Type = "Mouse"
+    aim_Type = "Mouse",
+    aim_Sens = 0.4
 }
 
 local esp_settings = {
@@ -37,12 +38,24 @@ TabAimbot:AddToggle({
     end    
 })
 TabAimbot:AddDropdown({
-	Name = "Aimbot type",
+	Name = "Aimbot Mode",
 	Default = "Mouse",
 	Options = {"Mouse", "Camera"},
 	Callback = function(Value)
 		aim_settings.aim_Type = Value
 	end    
+})
+TabAimbot:AddSlider({
+    Name = "Aimbot Smoothness(Mouse Mode)",
+    Min = 0.4,
+    Max = 5,
+    Default = 1,
+    Color = Color3.fromRGB(255,255,255),
+    Increment = 0.1,
+    ValueName = "",
+    Callback = function(Value)
+        aim_settings.aim_Sens = Value
+    end    
 })
 TabAimbot:AddSlider({
 	Name = "Aimbot Fov",
@@ -181,8 +194,8 @@ runservice.RenderStepped:Connect(function()
                 local mousePosition = uis:GetMouseLocation()
                 local headPosition3D = closest_Char.Body.Head.Position
                 local headPosition2D = camera:WorldToViewportPoint(headPosition3D)
-                local diffX = (headPosition2D.X - mousePosition.X) * 1
-                local diffY = (headPosition2D.Y - mousePosition.Y) * 1
+                local diffX = (headPosition2D.X - mousePosition.X) / aim_settings.aim_Sens
+                local diffY = (headPosition2D.Y - mousePosition.Y) / aim_settings.aim_Sens
                 getfenv().mousemoverel(diffX, diffY)
             else
                 camera.CFrame = CFrame.new(camera.CFrame.Position, closest_Char.Body.Head.Position)
