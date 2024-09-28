@@ -15,7 +15,7 @@ local aim_settings = {
     aimbot_AimPart = "Head",
     fov_Radius = 150,
     aim_Type = "Mouse",
-    aim_Sens = 0.4
+    aim_Sens = 1
 }
 
 local esp_settings = {
