@@ -119,7 +119,7 @@ function createESP(player)
 end
 
 local fov_Circle = Drawing.new("Circle")
-fov_Circle.Visible = true
+fov_Circle.Visible = false
 fov_Circle.Radius = aim_settings.fov_Radius
 fov_Circle.Color = Color3.new(1,1,1)
 fov_Circle.Thickness = 1
@@ -143,7 +143,6 @@ runservice.RenderStepped:Connect(function()
             local hrp2d, visible = camera:WorldToViewportPoint(hrp)
 
             if visible then
-
                 outline_Box.Size = Size
                 outline_Box.Position = Vector2.new(hrp2d.X - (Size.X / 2), hrp2d.Y - (Size.Y / 2))
 
