@@ -126,6 +126,15 @@ function createESP(player)
     end)
 end
 
+local fov_Circle = Drawing.new("Circle")
+fov_Circle.Visible = true
+fov_Circle.Radius = aim_settings.fov_Radius
+fov_Circle.Color = Color3.new(1,1,1)
+fov_Circle.Thickness = 1
+fov_Circle.Filled = false
+fov_Circle.Transparency = 1
+fov_Circle.Position = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
+
 -- Loop
 runservice.RenderStepped:Connect(function()
     for i,player in next, esp do
@@ -159,6 +168,36 @@ runservice.RenderStepped:Connect(function()
             end
         --end
     end
+
+    local distacne = math.huge
+    local closest_Char = nil
+
+    fov_Circle.Visible = aim_settings.enabled
+    fov_Circle.Radius = aim_settings.fov_Radius
+    fov_Circle.Position = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
+    camera.FieldOfView = misc_settings.fov
+
+    if aim_settings.aiming and aim_settings.enabled then
+        for i,v in next, character:GetChildren() do
+            if v ~= localplayer and v.PrimaryPart then
+                local charHRPpos, isVisible = camera:WorldToViewportPoint(v.Body.Head.Position)
+                local magDist = (Vector2.new(mouse.X, mouse.Y) - Vector2.new(charHRPpos.X, charHRPpos.Y)).Magnitude
+                if isVisible and magDist < distacne and magDist <= aim_settings.fov_Radius then
+                    distacne = magDist
+                    closest_Char = v
+                end
+            end
+        end
+        if closest_Char ~= nil then
+            local mousePosition = uis:GetMouseLocation()
+            local headPosition3D = closest_Char.Body.Head.Position
+            local headPosition2D = camera:WorldToViewportPoint(headPosition3D)
+            local diffX = (headPosition2D.X - mousePosition.X) * 1
+            local diffY = (headPosition2D.Y - mousePosition.Y) * 1
+            getfenv().mousemoverel(diffX, diffY)
+            --camera.CFrame = CFrame.new(camera.CFrame.Position, closest_Char.Body.Head.Position)
+        end
+    end
 end)
 
 local function playeradded(player)
@@ -188,46 +227,5 @@ end)
 uis.InputEnded:Connect(function(i)
     if i.UserInputType == Enum.UserInputType.MouseButton2 then
         aim_settings.aiming = false
-    end
-end)
-
-local fov_Circle = Drawing.new("Circle")
-fov_Circle.Visible = true
-fov_Circle.Radius = aim_settings.fov_Radius
-fov_Circle.Color = Color3.new(1,1,1)
-fov_Circle.Thickness = 1
-fov_Circle.Filled = false
-fov_Circle.Transparency = 1
-fov_Circle.Position = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
-
-runservice.RenderStepped:Connect(function()
-    local distacne = math.huge
-    local closest_Char = nil
-
-    fov_Circle.Visible = aim_settings.enabled
-    fov_Circle.Radius = aim_settings.fov_Radius
-    fov_Circle.Position = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
-    camera.FieldOfView = misc_settings.fov
-
-    if aim_settings.aiming and aim_settings.enabled then
-        for i,v in next, character:GetChildren() do
-            if v ~= localplayer and v.PrimaryPart then
-                local charHRPpos, isVisible = camera:WorldToViewportPoint(v.Body.Head.Position)
-                local magDist = (Vector2.new(mouse.X, mouse.Y) - Vector2.new(charHRPpos.X, charHRPpos.Y)).Magnitude
-                if isVisible and magDist < distacne and magDist <= aim_settings.fov_Radius then
-                    distacne = magDist
-                    closest_Char = v
-                end
-            end
-        end
-        if closest_Char ~= nil then
-            local mousePosition = uis:GetMouseLocation()
-            local headPosition3D = closest_Char.Body.Head.Position
-            local headPosition2D = camera:WorldToViewportPoint(headPosition3D)
-            local diffX = (headPosition2D.X - mousePosition.X) * 1
-            local diffY = (headPosition2D.Y - mousePosition.Y) * 1
-            getfenv().mousemoverel(diffX, diffY)
-            --camera.CFrame = CFrame.new(camera.CFrame.Position, closest_Char.Body.Head.Position)
-        end
     end
 end)
