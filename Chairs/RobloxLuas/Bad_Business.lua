@@ -221,7 +221,13 @@ runservice.RenderStepped:Connect(function()
             end
         end
         if closest_Char ~= nil then
-            camera.CFrame = CFrame.new(camera.CFrame.Position, closest_Char.Body.Head.Position)
+            local mousePosition = uis:GetMouseLocation()
+            local headPosition3D = closest_Char.Body.Head.Position
+            local headPosition2D = camera:WorldToViewportPoint(headPosition3D)
+            local diffX = (headPosition2D.X - mousePosition.X) * 1
+            local diffY = (headPosition2D.Y - mousePosition.Y) * 1
+            getfenv().mousemoverel(diffX, diffY)
+            --camera.CFrame = CFrame.new(camera.CFrame.Position, closest_Char.Body.Head.Position)
         end
     end
 end)
