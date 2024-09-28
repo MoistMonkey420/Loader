@@ -1,5 +1,5 @@
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
-local Window = OrionLib:MakeWindow({Name = "BadBusiness", HidePremium = false, SaveConfig = true, ConfigFolder = "Lester", IntroEnabled = true, IntroText = "BadBusiness"})
+local Window = OrionLib:MakeWindow({Name = "Napoleon Hook", HidePremium = false, SaveConfig = true, ConfigFolder = "Lester", IntroEnabled = true, IntroText = "Napoleon Hook"})
 
 local camera = workspace.CurrentCamera
 local character = Workspace.Characters
@@ -22,9 +22,6 @@ local esp_settings = {
     box = true
 }
 local esp = {}
-
-local misc_settings = {
-}
 
 --Aimbot
 local TabAimbot = Window:MakeTab({
@@ -73,7 +70,6 @@ TabVisuals:AddToggle({
     end    
 })
 
--- Create ESP
 function createESP(player)
     local outline_square = Drawing.new("Square")
     outline_square.Visible = false
@@ -131,10 +127,8 @@ fov_Circle.Filled = false
 fov_Circle.Transparency = 1
 fov_Circle.Position = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
 
--- Loop
 runservice.RenderStepped:Connect(function()
     for i,player in next, esp do
-
         local aplayer = player.Player
         local outline_Box = player.Outline_Box
         local box = player.Box
@@ -203,20 +197,17 @@ local function playeradded(player)
         createESP(player)
     end
 end
-
 for i,v in next, character:GetDescendants() do
     if v.ClassName == "Model" and v.PrimaryPart and v ~= localplayer then
         playeradded(v)
     end
 end
-
 character.DescendantAdded:Connect(function(v)
     if v.ClassName == "Model" and v.PrimaryPart and v ~= localplayer then
         playeradded(v)
     end
 end)
 
---Aimbot
 uis.InputBegan:Connect(function(i)
     if i.UserInputType == Enum.UserInputType.MouseButton2 then
         aim_settings.aiming = true
