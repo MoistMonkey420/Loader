@@ -13,7 +13,8 @@ local aim_settings = {
     enabled = true,
     aiming = false,
     aimbot_AimPart = "Head",
-    fov_Radius = 150
+    fov_Radius = 150,
+    aim_Type = "Mouse"
 }
 
 local esp_settings = {
@@ -23,7 +24,6 @@ local esp_settings = {
 local esp = {}
 
 local misc_settings = {
-    fov = 90
 }
 
 --Aimbot
@@ -38,6 +38,14 @@ TabAimbot:AddToggle({
     Callback = function(Value)
         aim_settings.enabled = Value
     end    
+})
+TabAimbot:AddDropdown({
+	Name = "Aimbot type",
+	Default = "Mouse",
+	Options = {"Mouse", "Camera"},
+	Callback = function(Value)
+		aim_settings.aim_Type = Value
+	end    
 })
 TabAimbot:AddSlider({
 	Name = "Aimbot Fov",
@@ -63,18 +71,6 @@ TabVisuals:AddToggle({
     Callback = function(Value)
         esp_settings.box = Value
     end    
-})
-TabVisuals:AddSlider({
-	Name = "Fov",
-	Min = 50,
-	Max = 120,
-	Default = 90,
-	Color = Color3.fromRGB(255,255,255),
-	Increment = 1,
-	ValueName = "",
-	Callback = function(Value)
-		misc_settings.fov = Value
-	end    
 })
 
 -- Create ESP
@@ -175,7 +171,6 @@ runservice.RenderStepped:Connect(function()
     fov_Circle.Visible = aim_settings.enabled
     fov_Circle.Radius = aim_settings.fov_Radius
     fov_Circle.Position = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
-    camera.FieldOfView = misc_settings.fov
 
     if aim_settings.aiming and aim_settings.enabled then
         for i,v in next, character:GetChildren() do
@@ -189,13 +184,16 @@ runservice.RenderStepped:Connect(function()
             end
         end
         if closest_Char ~= nil then
-            local mousePosition = uis:GetMouseLocation()
-            local headPosition3D = closest_Char.Body.Head.Position
-            local headPosition2D = camera:WorldToViewportPoint(headPosition3D)
-            local diffX = (headPosition2D.X - mousePosition.X) * 1
-            local diffY = (headPosition2D.Y - mousePosition.Y) * 1
-            getfenv().mousemoverel(diffX, diffY)
-            --camera.CFrame = CFrame.new(camera.CFrame.Position, closest_Char.Body.Head.Position)
+            if (aim_settings.aim_Type == "Mouse") then
+                local mousePosition = uis:GetMouseLocation()
+                local headPosition3D = closest_Char.Body.Head.Position
+                local headPosition2D = camera:WorldToViewportPoint(headPosition3D)
+                local diffX = (headPosition2D.X - mousePosition.X) * 1
+                local diffY = (headPosition2D.Y - mousePosition.Y) * 1
+                getfenv().mousemoverel(diffX, diffY)
+            else
+                camera.CFrame = CFrame.new(camera.CFrame.Position, closest_Char.Body.Head.Position)
+            end
         end
     end
 end)
