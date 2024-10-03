@@ -152,21 +152,23 @@ runservice.RenderStepped:Connect(function()
             Height = -math.abs(camera:WorldToViewportPoint(orien.Position + height).Y - camera:WorldToViewportPoint(orien.Position - height).Y)
             Size = Vector2.new((Height / 2), Height)
 
-            local hrp = aplayer.PrimaryPart.Position
-            local hrp2d, visible = camera:WorldToViewportPoint(hrp)
-
-            if visible then
-                outline_Box.Size = Size
-                outline_Box.Position = Vector2.new(hrp2d.X - (Size.X / 2), hrp2d.Y - (Size.Y / 2))
-
-                box.Size = Size
-                box.Position = outline_Box.Position
-
-                outline_Box.Visible = esp_settings.box
-                box.Visible = esp_settings.box
-            else
-                outline_Box.Visible = false
-                box.Visible = false
+            if aplayer:FindFirstChild("Root") then
+                local rootPos = aplayer.Root.Position
+                local root2d, visible = camera:WorldToViewportPoint(rootPos)
+            
+                if visible then
+                    outline_Box.Size = Size
+                    outline_Box.Position = Vector2.new(root2d.X - (Size.X / 2), root2d.Y - (Size.Y / 2))
+            
+                    box.Size = Size
+                    box.Position = outline_Box.Position
+            
+                    outline_Box.Visible = esp_settings.box
+                    box.Visible = esp_settings.box
+                else
+                    outline_Box.Visible = false
+                    box.Visible = false
+                end
             end
         --end
     end
