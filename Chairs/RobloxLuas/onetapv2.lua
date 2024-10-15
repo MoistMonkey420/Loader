@@ -330,28 +330,6 @@ function Library:CreateWindow(title)
     return Window
 end
 
--- Add a function to create a section within a tab
-function Tab:AddSection(sectionName)
-    local SectionFrame = Instance.new("Frame")
-    SectionFrame.Name = sectionName .. "Section"
-    SectionFrame.Size = UDim2.new(1, 0, 0, 30)
-    SectionFrame.BackgroundTransparency = 1
-    SectionFrame.Parent = ContentFrame
-
-    local SectionText = Instance.new("TextLabel")
-    SectionText.Name = "SectionText"
-    SectionText.Size = UDim2.new(1, 0, 1, 0)
-    SectionText.BackgroundTransparency = 1
-    SectionText.Text = sectionName
-    SectionText.TextColor3 = Color3.fromRGB(255, 170, 0)
-    SectionText.TextSize = 16
-    SectionText.Font = Enum.Font.SourceSansBold
-    SectionText.TextXAlignment = Enum.TextXAlignment.Left
-    SectionText.Parent = SectionFrame
-
-    return SectionFrame
-end
-
 -- Add a function to create a button
 function Tab:AddButton(buttonName, callback)
     local ButtonFrame = Instance.new("Frame")
